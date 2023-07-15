@@ -1,0 +1,71 @@
+<form action="/predict" method="POST">
+
+    <label for="position">Ou voulez-vous habiter</label>
+    <select id="position" name="position" >
+      <option value="1">En ville?</option>
+      <option value="2">Proche de la ville?</option>
+      <option value="3">Loin de la ville?</option>
+    </select>
+    {% if error_position %}
+    <span style="color: red;">{{ error_position }}</span>
+{% endif %}
+    <br>
+
+    <label for="chambres"> combien de chambres voulez-vous?</label>
+    <select id="chambres" name="nbchambres" >
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+    {% if error_position %}
+    <span style="color: red;">{{ error_nbchambres }}</span>
+    {% endif %}
+    <br>
+
+    <label for="douche_interne">Avec douche interne </label>
+    <input type="radio" id="douche_interne_oui" name="douche_interne" value="1">
+    <label for="douche_interne_oui">Oui</label>
+    <input type="radio" id="douche_interne_non" name="douche_interne" value="0">
+    <label for="douche_interne_non">Non</label>
+    {% if error_position %}
+    <span style="color: red;">{{ error_douche_interne }}</span>
+{% endif %}
+    <br>
+
+    <label for="douche_externe">Avec douche externe </label>
+    <input type="radio" id="douche_externe_oui" name="douche_externe" value="1">
+    <label for="douche_externe_oui">Oui</label>
+    <input type="radio" id="douche_externe_non" name="douche_externe" value="0">
+    <label for="douche_externe_non">Non</label>
+    {% if error_position %}
+    <span style="color: red;">{{ error_douche_externe }}</span>
+{% endif %}
+    <br>
+
+    <label for="cuisine_externe"> Avec cuisine externe </label>
+    <input type="radio" id="cuisine_externe_oui" name="cuisine_externe" value="1">
+    <label for="cuisine_interne_oui">Oui</label>
+    <input type="radio" id="cuisine_externe_non" name="cuisine_externe" value="0">
+    <label for="cuisine_externe_non">Non</label>
+
+    {% if error_position %}
+    <span style="color: red;">{{ error_cuisine_externe }}</span>
+{% endif %}
+    <br>
+
+    <label for="cuisine_interne">Avec cuisine interne </label>
+    <input type="radio" id="cuisine_interne_oui" name="cuisine_interne" value="1">
+    <label for="cuisine_interne_oui">Oui</label>
+    <input type="radio" id="cuisine_interne_non" name="cuisine_interne" value="0">
+    <label for="cuisine_interne_non">Non</label>
+
+    {% if error_position %}
+    <span style="color: red;">{{ error_cuisine_interne }}</span>
+{% endif %}
+    <br>
+
+    <input type="submit" value="Predire">
+  </form>
+    {% if prediction %}
+		<h2>Résultat de la prédiction est : {{ prediction|int }}</h2>
+	{% endif %}
