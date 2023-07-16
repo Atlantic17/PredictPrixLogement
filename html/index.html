@@ -1,71 +1,279 @@
-<form action="/predict" method="POST">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prediction de prix location</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+      body {
+        background-image: url("https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-color: rgba(255, 255, 255, 0.5);
+      }
+      .form-body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .div-2 {
+        background-color: rgb(39, 49, 68);
+        padding: 5px;
+      }
+      /* Style pour le message de chargement */
+      .loader {
+        align-items: center;
+        justify-content: center;
+        border: 16px solid #f3f3f3;
+        border-top: 16px solid #3498db;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        margin: auto;
+        margin-top: 200px;
+      }
 
-    <label for="position">Ou voulez-vous habiter</label>
-    <select id="position" name="position" >
-      <option value="1">En ville?</option>
-      <option value="2">Proche de la ville?</option>
-      <option value="3">Loin de la ville?</option>
-    </select>
-    {% if error_position %}
-    <span style="color: red;">{{ error_position }}</span>
-{% endif %}
-    <br>
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loader" class="loader"></div>
+    <div class="text-center text-dark mt-2" id="myForm2" style="display: none">
+      <h3>
+        Bienvenue dans votre application de prédiction des prix de logement!
+      </h3>
+      <h3>Vous satisfaire est notre priorité.</h3>
+    </div>
+    <div id="myForm" class="form-body" style="display: none">
+      <div>
+        <div class="form-control div-2">
+          {% if prediction %}
+          <strong>
+            <p class="text-white text-center col-12">
+              Le résultat de la prédiction est :
+              <span class="text-success">{{ prediction|int }} FCA</span>
+            </p>
+          </strong>
+          {% endif %}
+          <form
+            class="was-validated form-control"
+            action="/predict"
+            method="POST"
+          >
+            <h5 class="text-info text-center"><strong>PREDICTION</strong></h5>
+            <div class="form-group">
+              <label class="form-label" for="position"
+                ><span class="text-danger">*</span> Ou voulez-vous habiter
+              </label>
+              <select
+                class="form-select"
+                aria-label="file example"
+                id="position"
+                name="position"
+                required
+              >
+                <option value="">Select</option>
+                <option value="1">En ville?</option>
+                <option value="2">Proche de la ville?</option>
+                <option value="3">Loin de la ville?</option>
+              </select>
+            </div>
 
-    <label for="chambres"> combien de chambres voulez-vous?</label>
-    <select id="chambres" name="nbchambres" >
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-    </select>
-    {% if error_position %}
-    <span style="color: red;">{{ error_nbchambres }}</span>
-    {% endif %}
-    <br>
+            {% if error_position %}
+            <span style="color: red">{{ error_position }}</span>
+            {% endif %}
+            <br />
 
-    <label for="douche_interne">Avec douche interne </label>
-    <input type="radio" id="douche_interne_oui" name="douche_interne" value="1">
-    <label for="douche_interne_oui">Oui</label>
-    <input type="radio" id="douche_interne_non" name="douche_interne" value="0">
-    <label for="douche_interne_non">Non</label>
-    {% if error_position %}
-    <span style="color: red;">{{ error_douche_interne }}</span>
-{% endif %}
-    <br>
+            <div class="form-group">
+              <label class="form-label" for="chambres">
+                <span class="text-danger">*</span> combien de chambres
+                voulez-vous?
+              </label>
+              <select
+                class="form-select"
+                id="chambres"
+                name="nbchambres"
+                required
+              >
+                <option value="">Select</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+              </select>
+            </div>
+            {% if error_position %}
+            <span style="color: red">{{ error_nbchambres }}</span>
+            {% endif %}
+            <br />
+            <div class="row">
+              <div class="col-7 me-2"></div>
+              <div class="col-2 text-info">(OUI)</div>
+              <div class="col-2 text-info">(NON)</div>
+            </div>
+            <div class="row form-group">
+              <label class="col-8 form-label" for="douche_interne"
+                ><span class="text-danger">*</span> Avec douche interne
+              </label>
+              <div class="col-2">
+                <input
+                  type="radio"
+                  id="douche_interne_oui"
+                  name="douche_interne"
+                  value="1"
+                  class="form-check-input"
+                  required
+                />
+              </div>
+              <div class="col-2">
+                <input
+                  type="radio"
+                  id="douche_interne_non"
+                  name="douche_interne"
+                  value="0"
+                  class="form-check-input"
+                  required
+                />
+              </div>
+            </div>
+            {% if error_position %}
+            <span style="color: red">{{ error_douche_interne }}</span>
+            {% endif %}
+            <br />
+            <div class="row form-group">
+              <label class="col-8 form-label" for="douche_externe"
+                ><span class="text-danger">*</span> Avec douche externe
+              </label>
+              <div class="col-2">
+                <input
+                  type="radio"
+                  id="douche_externe_oui"
+                  name="douche_externe"
+                  value="1"
+                  class="form-check-input"
+                  required
+                />
+              </div>
+              <diiv class="col-2">
+                <input
+                  type="radio"
+                  id="douche_externe_non"
+                  name="douche_externe"
+                  value="0"
+                  class="form-check-input"
+                  required
+                />
+              </diiv>
+            </div>
+            {% if error_position %}
+            <span style="color: red">{{ error_douche_externe }}</span>
+            {% endif %}
+            <br />
 
-    <label for="douche_externe">Avec douche externe </label>
-    <input type="radio" id="douche_externe_oui" name="douche_externe" value="1">
-    <label for="douche_externe_oui">Oui</label>
-    <input type="radio" id="douche_externe_non" name="douche_externe" value="0">
-    <label for="douche_externe_non">Non</label>
-    {% if error_position %}
-    <span style="color: red;">{{ error_douche_externe }}</span>
-{% endif %}
-    <br>
+            <div class="row form-group">
+              <label class="col-8 form-label" for="cuisine_externe">
+                <span class="text-danger">*</span> Avec cuisine externe
+              </label>
+              <div class="col-2">
+                <input
+                  type="radio"
+                  id="cuisine_externe_oui"
+                  name="cuisine_externe"
+                  value="1"
+                  class="form-check-input"
+                  required
+                />
+              </div>
+              <div class="col-2">
+                <input
+                  type="radio"
+                  id="cuisine_externe_non"
+                  name="cuisine_externe"
+                  value="0"
+                  class="form-check-input"
+                  required
+                />
+              </div>
+            </div>
 
-    <label for="cuisine_externe"> Avec cuisine externe </label>
-    <input type="radio" id="cuisine_externe_oui" name="cuisine_externe" value="1">
-    <label for="cuisine_interne_oui">Oui</label>
-    <input type="radio" id="cuisine_externe_non" name="cuisine_externe" value="0">
-    <label for="cuisine_externe_non">Non</label>
+            {% if error_position %}
+            <span style="color: red">{{ error_cuisine_externe }}</span>
+            {% endif %}
+            <br />
 
-    {% if error_position %}
-    <span style="color: red;">{{ error_cuisine_externe }}</span>
-{% endif %}
-    <br>
+            <div class="row form-group">
+              <label class="col-8 form-group" for="cuisine_interne"
+                ><span class="text-danger">*</span> Avec cuisine interne
+              </label>
+              <div class="col-2">
+                <input
+                  type="radio"
+                  id="cuisine_interne_oui"
+                  name="cuisine_interne"
+                  value="1"
+                  class="form-check-input"
+                  required
+                />
+              </div>
+              <div class="col-2">
+                <input
+                  type="radio"
+                  id="cuisine_interne_non"
+                  name="cuisine_interne"
+                  value="0"
+                  class="form-check-input"
+                  required
+                />
+              </div>
+            </div>
 
-    <label for="cuisine_interne">Avec cuisine interne </label>
-    <input type="radio" id="cuisine_interne_oui" name="cuisine_interne" value="1">
-    <label for="cuisine_interne_oui">Oui</label>
-    <input type="radio" id="cuisine_interne_non" name="cuisine_interne" value="0">
-    <label for="cuisine_interne_non">Non</label>
+            {% if error_position %}
+            <span style="color: red">{{ error_cuisine_interne }}</span>
+            {% endif %}
+            <br />
 
-    {% if error_position %}
-    <span style="color: red;">{{ error_cuisine_interne }}</span>
-{% endif %}
-    <br>
+            <input
+              class="btn btn-primary form-control"
+              type="submit"
+              value="Predire"
+            />
+          </form>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Récupérer le message de chargement
+      var loader = document.getElementById("loader");
 
-    <input type="submit" value="Predire">
-  </form>
-    {% if prediction %}
-		<h2>Résultat de la prédiction est : {{ prediction|int }}</h2>
-	{% endif %}
+      // Masquer le formulaire jusqu'à ce que la page soit chargée
+      document.getElementById("myForm").style.display = "none";
+
+      // Afficher le message de chargement pendant 3 secondes
+      setTimeout(function () {
+        loader.style.display = "none";
+        document.getElementById("myForm").style.display = "flex";
+        document.getElementById("myForm2").style.display = "block";
+      }, 1000);
+    </script>
+  </body>
+</html>
